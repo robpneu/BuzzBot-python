@@ -248,7 +248,7 @@ async def join(context):
 
     # Build message tell them how to register for courses
     message = "You've been added to the general channels! Feel free to look around and ask questions!"
-    message += "\n\nIf you would like to be added to any courses this semester, head over to <#799342963146752000>. There, just type `!register` and then the courses you'd like to be added to."
+    message += "\n\nIf you would like to be added to any courses this semester, head over to <#755950528646610945>. There, just type `!register` and then the courses you'd like to be added to."
     message += " For example `!register ae1000,ae1001` would register you for AE 1000 and AE 1001. Capitalization and spaces don't matter, just make sure you separate each course using a comma"
     message += "\n\nRob is the admin so if you need anything just type in your message `@Rob` and he'll get an alert."
     await context.message.channel.send(message)
