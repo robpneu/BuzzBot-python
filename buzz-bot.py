@@ -435,10 +435,14 @@ async def add(context, *, arg):
 
 @bot.event
 async def on_member_join(new_member):
-    new_member_mention = new_member.mention
-    welcome_channel = discord.utils.get(new_member.guild.text_channels, name="welcome") #bot.get_channel(797588095352176721) # get the welcome channel
+    welcome_channel = discord.utils.get(new_member.guild.text_channels, name="welcome")
     await welcome_channel.send(f"Hi {new_member.mention}! I'm the BuzzBot. I'm here to help get you situated. To complete the joining process please message back with \"!join\"")
    
+# Watch all messages so as to only actually process the commands above in certain channels or if they're from an admin
+@bot.event
+async def on_message(message):
+    if message.channel.name == 'course-requests' or message.channel.name == 'welcome' or message.channel.name == 'bot-testing' or discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles) in message.author.roles:
+        await bot.process_commands(message)
 
 # Get the Discord token from the environment and run the bot
 bot.run(os.getenv('BUZZ_BOT_TOKEN'))
