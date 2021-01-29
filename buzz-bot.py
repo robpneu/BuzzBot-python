@@ -94,8 +94,8 @@ def db_get_course_available(dept, course, topic):
     """
 
     # Build query to check if the course is in the registrar table
-    sql = "SELECT * FROM registrar WHERE dept='" + dept + "' AND course='" + course + "'"
-    sql += "AND year='" + current_year + "' AND semester='" + current_semester + "'"
+    sql = "SELECT * FROM registrar WHERE dept='" + dept + "' AND course='" + course + "' "
+    sql += "AND topic='" + topic + "' AND year='" + current_year + "' AND semester='" + current_semester + "'"
     logger.debug("db_get_course_available query: \"" + sql + "\"")
     return conn.execute(sql).fetchall() # Return what the query returned
 
