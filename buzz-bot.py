@@ -312,10 +312,10 @@ async def register(context, *, arg):
                         # Build the message
                         if message != "": # if the message is not currently blank
                             message += "\n" # add a new line for the additional message piece
-                        message += "You have already requested `" + dept + " " + course
+                        message += "You have already requested " + dept + " " + course
                         if topic != "0":
                             message += "-" + topic
-                        message += "`. It will be created and you will be automatically added when there is another request for it."
+                        message += ". It will be created and you will be automatically added when there is another request for it."
                     
                     else: # If the user is not the previous requester, then they're the second requester
                         logger.debug("register - requestor was not previous requestor, creating course")
@@ -362,11 +362,11 @@ async def register(context, *, arg):
                     # Build the message
                     if message != "": # if the message is not currently blank
                         message += "\n" # add a new line for the additional message piece
-                    message += "You are the first person to request `" + dept + " " + course
+                    message += "You are the first person to request " + dept + " " + course
                     if topic != "0":
                         message += "-" + topic
-                    message += "`. Once there is another request for it, I will create it and automatically add you to it."
-                    logger.info("register - course had not been requested. Created request by " + requestor.display_name + "(" + str(requestor.id) + ")" + "for " + dept + " " + course + "-" + topic)
+                    message += ". Once there is another request for it, I will create it and automatically add you to it."
+                    logger.info("register - course had not been requested. Created request by " + requestor.display_name + "(" + str(requestor.id) + ")" + " for " + dept + " " + course + "-" + topic)
 
         else: # if the course was not valid
             logger.debug("register - course is not valid: " + x)
@@ -375,16 +375,16 @@ async def register(context, *, arg):
 
             if db_is_course_special_topics(dept, course): # if that course is a special topics course, then they specified something incorrectly
                 logger.info("register - course is special topics course but topic did not match: " + dept + " " + course + "-" + topic)
-                message += "`" + dept + " " + course + "` is a special topics course but I didn't recognize the topic you specified."
+                message += "" + dept + " " + course + " is a special topics course but I didn't recognize the topic you specified."
                 message += "\nThe topic is the first 3 letters of the course name and should be included after the course number with a dash. Ex: `ae8803-non` for AE 8803 \"Nonlinear Control Systems\""
             else:
                 logger.info("register - course is entirely unknown (not special topics): " + dept + " " + course + "-" + topic)
                 # Build the message
-                message += "Sorry, I have never heard of `" + dept + " " + course
+                message += "Sorry, I have never heard of \"" + dept + " " + course
                 if topic != "0":
                     message += "-" + topic
-                message += "`. Please double check that it was typed correctly. "
-                message += "If it was, please use the `!add` command to add it to my memory."
+                message += "\". Please double check that it was typed correctly. "
+                message += "If it was, please use the `!add` command to add it to my memory. (ex: `!add ECE 1000 Intro to Electrical Engineering`)"
 
     await context.message.channel.send(message) # send the message to the channel!
 
