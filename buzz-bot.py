@@ -245,10 +245,11 @@ async def help(context):
 async def join(context):
     user = context.message.author # get the member who requested access
     await user.add_roles(discord.utils.get(user.guild.roles, name="Yellow Jackets")) # give the Yellow Jackets role (which grants basic server access)
+    requests_channel = discord.utils.get(context.guild.text_channels, name="course-requests")
 
     # Build message tell them how to register for courses
     message = "You've been added to the general channels! Feel free to look around and ask questions!"
-    message += "\n\nIf you would like to be added to any courses this semester, head over to <#755950528646610945>. There, just type `!register` and then the courses you'd like to be added to."
+    message += f"\n\nIf you would like to be added to any courses this semester, head over to {requests_channel.mention}. There, just type `!register` and then the courses you'd like to be added to."
     message += " For example `!register ae1000,ae1001` would register you for AE 1000 and AE 1001. Capitalization and spaces don't matter, just make sure you separate each course using a comma"
     message += "\n\nRob is the admin so if you need anything just type in your message `@Rob` and he'll get an alert."
     await context.message.channel.send(message)
@@ -437,7 +438,7 @@ async def add(context, *, arg):
 async def on_member_join(new_member):
     welcome_channel = discord.utils.get(new_member.guild.text_channels, name="welcome")
     await welcome_channel.send(f"Hi {new_member.mention}! I'm the BuzzBot. I'm here to help get you situated. To complete the joining process please message back with \"!join\"")
-   
+
 # Watch all messages so as to only actually process the commands above in certain channels or if they're from an admin
 @bot.event
 async def on_message(message):
