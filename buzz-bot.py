@@ -251,7 +251,7 @@ async def join(context):
     message = "You've been added to the general channels! Feel free to look around and ask questions!"
     message += f"\n\nIf you would like to be added to any courses this semester, head over to {requests_channel.mention}. There, just type `!register` and then the courses you'd like to be added to."
     message += " For example `!register ae1000,ae1001` would register you for AE 1000 and AE 1001. Capitalization and spaces don't matter, just make sure you separate each course using a comma"
-    message += "\n\nRob is the admin so if you need anything just type in your message `@Rob` and he'll get an alert."
+    message += "\n\nRob is the admin so if you need anything just type `@Rob` in your message and he'll get an alert."
     await context.message.channel.send(message)
     logger.info("join- " + user.display_name + "(" + str(user.id) + ")")
 
@@ -388,6 +388,18 @@ async def register(context, *, arg):
                 message += "If it was, please use the `!add` command to add it to my memory. (ex: `!add ECE 1000 Intro to Electrical Engineering`)"
 
     await context.message.channel.send(message) # send the message to the channel!
+
+    # If they tried to register before "joining", just give them access because they clearly know more or less what's going on
+    if discord.utils.find(lambda r: r.name == 'Yellow Jackets', context.message.guild.roles) not in context.message.author.roles:
+        await context.message.author.add_roles(discord.utils.get(context.guild.roles, name="Yellow Jackets")) # give the Yellow Jackets role (which grants basic server access)
+        requests_channel = discord.utils.get(context.guild.text_channels, name="course-requests")
+        # Build message tell them how to register for courses
+        join_message = "You've also been added to the general channels! Feel free to look around and ask questions!"
+        join_message += f"\n\nIf you would like to be added to any additional courses, head over to {requests_channel.mention}. There, type `!register` and then the courses you'd like to be added to."
+        join_message += " For example `!register ae1000,ae1001` would register you for AE 1000 and AE 1001. Capitalization and spaces don't matter, just make sure you separate each course using a comma"
+        join_message += "\n\nRob is the admin so if you need anything just type `@Rob` in your message and he'll get an alert."
+        logger.info("automatically added after failling to follow join instructions- " + context.message.author.display_name + "(" + str(context.message.author.id) + ")")
+        await context.message.channel.send(join_message)
 
 
 # Create a new course
