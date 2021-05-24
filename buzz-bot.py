@@ -18,11 +18,11 @@ logger.addHandler(handler)
 logger.info("Buzz-Bot started")
 
 # Config Variables
-current_year = "2021"
-current_year_short = "21"
-current_semester = "Spring"
-current_semester_short = "Sp"
-current_semester_sort = "1-" + current_semester
+current_year = os.getenv('CURRENT_YEAR')
+current_year_short = os.getenv('CURRENT_YEAR_SHORT')
+current_semester = os.getenv('CURRENT_SEMESTER')
+current_semester_short = os.getenv('CURRENT_SEMESTER_SHORT')
+current_semester_sort = os.getenv('CURRENT_SEMESTER_SORT') + "-" + current_semester
 
 # Global Database Variables
 Courses_Columns = Enum('Courses_Columns', ['dept', 'course', 'topic', 'title', 'special'], start=0)
@@ -296,11 +296,12 @@ async def register(context, *, arg):
                 message += "You have been added to " + dept + " " + course
                 if topic != "0":
                     message += "-" + topic
-                logger.info("register - " + requestor.display_name + "(" + str(requestor.id) + ") joined " + dept + " " + course + "-" + topic)
+                message += " for the " + current_semester + " " + current_year + " semester."
+                logger.info("register - " + requestor.display_name + "(" + str(requestor.id) + ") joined " + dept + " " + course + "-" + topic + " " + current_semester + " " + current_year)
             
             else: # If there was not a current course offering, check the requests
                 logger.debug("register - course was not scheduled. checking requests")
-                request = db_get_course_requested(dept, course, topic) # get any requests for the course
+                request = db_get_course_requested(dept, course, topic) # get any requests for the course TODO: Add the semester to the course request to accomodate requests for future courses
                 
                 if request: # if it has been requested
                     logger.debug("register - " + requestor.display_name + "(" + str(requestor.id) + ") had already requested " + dept + " " + course + "-" + topic)
@@ -318,7 +319,7 @@ async def register(context, *, arg):
                             message += "-" + topic
                         message += ". It will be created and you will be automatically added when there is another request for it."
                     
-                    else: # If the user is not the previous requester, then they're the second requester
+                    else: # If the user is not the previous requester, then they're the second requester and the course should be created
                         logger.debug("register - requestor was not previous requestor, creating course")
                         # Configure the permission overwrites
                         permission_overwrites = {
@@ -352,8 +353,8 @@ async def register(context, *, arg):
                         if topic != "0":
                             course_name_full += "-" + topic
 
-                        message += f"{requestor.mention} - You have been added to " + course_name_full
-                        message += f".\n{previous_requestor.mention} - You had previously requested " + course_name_full + " so you have been added to it automatically."
+                        message += f"{requestor.mention} - You have been added to " + course_name_full + " for the " + current_semester + " " + current_year + " semester"
+                        message += f".\n{previous_requestor.mention} - You had previously requested " + course_name_full + " for the " + current_semester + " " + current_year + " semester" + " so you have been added to it automatically."
                         logger.info("register - course was already requested by " + previous_requestor.display_name + "(" + str(previous_requestor.id) + "). Created course and added " + requestor.display_name + "(" + str(requestor.id) + ")")
                 
                 else: # if the course has not been requested
