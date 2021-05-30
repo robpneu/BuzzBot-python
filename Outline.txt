@@ -1,0 +1,12 @@
+register process
+- parse course list
+- check each course (loop)
+    - is valid? (in courses table)
+        - Yes: is scheduled? (in registrar table)
+            - Yes: add user to it (add to schedule table & give them correct permissions to category)
+            - No: is requested? (in requests table)
+                - Yes: is the previous requestor the current requestor (ie requesting it again?)
+                    - Yes: Tell them they've already requested it and is still waiting to be requested by someone else
+                    - No: create category, add current and previous requesting user to it (add to schedule table & give them correct permissions to category)
+                - No: Add to requests table
+        - No: Add to invalid courses list
