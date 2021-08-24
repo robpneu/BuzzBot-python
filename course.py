@@ -28,7 +28,7 @@ class Course:
             # if there is a department and a course, then the length will be 2. otherwise this is not possibly valid
             if len(dept_course) == 2:
                 # Get rid of any hanging white space with strip.
-                self.dept = dept_course[0].strip()
+                self.dept = dept_course[0].strip().upper()
                 self.code = dept_course[1].strip()
                 self.topic = "0" # default to 0
                 self.is_possible = True
@@ -69,7 +69,9 @@ class Course:
 
     def set_title(self, new_title):
         """Set the course title"""
-        self.title = new_title
+
+        # Set the title and remove any hanging whitespace
+        self.title = new_title.strip()
 
     
     def get_full_name(self):

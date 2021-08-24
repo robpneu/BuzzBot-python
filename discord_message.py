@@ -46,7 +46,7 @@ class DiscordMessage:
         line += "so you have been added to it automatically."
         self.append(line)
 
-    def append_course_unkonwn_topic(self, course : Course):
+    def append_course_unknown_topic(self, course : Course):
         """Append the "this is a special topics course but I don't recognize the topic specified" message"""
 
         line = '{} {} is a special topics course but I didn\'t recognize the topic you specified.'.format(course.dept, course.code)
@@ -54,7 +54,7 @@ class DiscordMessage:
         line += "Ex: `ae8803-non` for AE 8803 \"Nonlinear Control Systems\""
         line += "\nIf that is a valid course, it is also possible that this topic has not been added to my memory."
         line += "If it was, please use the `!add` command to add it to my memory. "
-        line += "(ex: `!add ECE 1000 Intro to Electrical Engineering`)"
+        line += "(ex: `!add ece1000 Intro to Electrical Engineering`)"
         self.append(line)
 
     def append_course_unknown(self, course : Course):
@@ -63,7 +63,7 @@ class DiscordMessage:
         line = 'Sorry, I have never heard of \" {} \". '.format(course.raw_string, course.get_full_semester())
         line += "Please double check that it was typed correctly. "
         line += "If it was, please use the `!add` command to add it to my memory. "
-        line += "(ex: `!add ECE 1000 Intro to Electrical Engineering`)"
+        line += "(ex: `!add ece1000 Intro to Electrical Engineering`)"
         self.append(line)
 
     def append_join_message(self, context, followed_instructions : bool):

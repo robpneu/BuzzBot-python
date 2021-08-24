@@ -356,7 +356,7 @@ async def register(context, *, arg):
                         logger.debug("register - requestor was not previous requestor, creating course")
 
                         # If we cannot create any more courses, then we've got a problem. Continue in the loop and process the next course
-                        if get_max_courses_remaining() < 1:
+                        if get_max_courses_remaining(context) < 1:
                             message.append("If you're reading this then unfortunately we've hit the course limit for this server and we've created courses faster than @Rob can make room for")
                             continue
                         
@@ -379,7 +379,7 @@ async def register(context, *, arg):
                         await context.guild.create_voice_channel("voice-chat-" + channel_name_suffix, category=category) # create the voice chat
 
                         # Check the server limits and log them.
-                        check_limits()
+                        check_limits(context)
 
                         # Do all the associated database calls
                         db_create_course_registration(potential_course, category.id) # create the course in the registrar
@@ -390,7 +390,7 @@ async def register(context, *, arg):
 
                         # Append to the message to the user
                         message.append_course_added(potential_course, f"{requestor.mention} - ")
-                        message.append_course_previously_requested_added(potential_course, f".\n{previous_requestor.mention} - ")
+                        message.append_course_previously_requested_added(potential_course, f"{previous_requestor.mention} - ")
                         
                         logger.info("register - course was already requested by " + previous_requestor.display_name + "(" + str(previous_requestor.id) + "). Created course and added " + requestor.display_name + "(" + str(requestor.id) + ")")
                 
@@ -409,12 +409,14 @@ async def register(context, *, arg):
                 logger.info("register - course is special topics course but topic did not match a known one: " + potential_course.get_full_name())
                 
                 # Append to the message to the user
-                message.append_course_unkonwn_topic(potential_course)
+                message.append_course_unknown_topic(potential_course)
 
             else:
                 logger.info("register - course is entirely unknown (not special topics): " + potential_course.get_full_name())
                 # Append to the message to the user
-                message.append_course_unkonwn(potential_course)
+                message.append_course_unknown(potential_course)
+    
+    message.append("--------------------") # Append a dashed line to separate each course
 
 
     # If they tried to register in the welcome channel before "joining", just give them access because they clearly know more or less what's going on
@@ -444,7 +446,7 @@ async def add(context, *, arg):
         logger.info("add - course not possible? : " + arg)
 
     else:
-        logger.info("add - course created in database: " + new_course.get_full_name)
+        logger.info("add - course created in database: " + new_course.get_full_name())
         # Join the remaining arguments into a single string and set it as the course title
         new_course.set_title(' '.join(arg_components[1:]))
 
@@ -454,7 +456,7 @@ async def add(context, *, arg):
         # the message to send back to the requestor
         message.append_added_to_memory(new_course)
 
-    await context.message.channel.send(message) # send the message to the channel!
+    await context.message.channel.send(message.message) # send the message to the channel!
 
 # Check the server limits
 @bot.command(name="checklimits")

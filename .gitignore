@@ -2,4 +2,5 @@
 *.db
 *.xlsx
 *.csv
+.env
 bot-env
