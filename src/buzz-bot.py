@@ -1,13 +1,9 @@
-import discord, sqlite3, re, math, logging, os
+import discord, sqlite3, math, logging, os
 from discord.ext import commands
 from enum import Enum
-from discord.message import Message
 from dotenv import load_dotenv
 from course import Course
 from discord_message import DiscordMessage
-
-# load environment variables
-load_dotenv('.env')
 
 # Config Variables
 current_year = os.getenv('CURRENT_YEAR')
@@ -15,11 +11,8 @@ current_semester = os.getenv('CURRENT_SEMESTER')
 logging_level = os.getenv('LOG_LEVEL')
 
 # Set up logging
-logger = logging.getLogger('discord')
-logger.setLevel(logging_level)
-handler = logging.FileHandler(filename='buzz-bot.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+logger = logging.getLogger()
+logging.basicConfig(format='%(asctime)s %(name)s %(levelname)s: %(message)s', level=logging_level)
 
 logger.info("Buzz-Bot started")
 
