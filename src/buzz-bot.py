@@ -1,20 +1,21 @@
 import discord, sqlite3, math, logging, os
 from discord.ext import commands
 from enum import Enum
-from dotenv import load_dotenv
 from course import Course
 from discord_message import DiscordMessage
 
 # Config Variables
-current_year = os.getenv('CURRENT_YEAR')
-current_semester = os.getenv('CURRENT_SEMESTER')
-logging_level = os.getenv('LOG_LEVEL')
+CURRENT_YEAR = os.getenv('CURRENT_YEAR')
+CURRET_SEMESTER = os.getenv('CURRENT_SEMESTER')
+LOGGING_LEVEL = os.getenv('LOG_LEVEL', default='WARNING')
 
 # Set up logging
 logger = logging.getLogger()
-logging.basicConfig(format='%(asctime)s %(name)s %(levelname)s: %(message)s', level=logging_level)
+logging.basicConfig(format='%(asctime)s %(name)s %(levelname)s: %(message)s', level=LOGGING_LEVEL)
 
 logger.info("Buzz-Bot started")
+logger.info("Logging Level: " + LOGGING_LEVEL)
+logger.info("Semester and Year: " + CURRET_SEMESTER + " " + CURRENT_YEAR)
 
 # Global Database Variables
 Courses_Columns = Enum('Courses_Columns', ['dept', 'course', 'topic', 'title', 'special'], start=0)
@@ -246,7 +247,7 @@ async def help(context):
     message += "\n\n__**register**__ - join a course or list of courses (separated by commas). Capitalization and spaces don't matter, just make sure you separate multiple courses using a comma"
     message += "\n> Ex: `!register ae1000,ae1001` would register you for AE 1000 and AE 1001."
     message += "\n\n> Note: If this course is a special topics course (ie, all sections are not taught together, usually covering different topics), then include a \"-\" and the first 3 letters of the course name. Ex: `!register ae8803-non` would add you to the \"Nonlinear\" section of AE 8803"
-    message += "\n\n> Note2: If you want to register for a course in a semester other than " + current_semester + " " + current_year + " (the current semester) then just add the semester and year to the end of any course. Ex: `!register ae1000-sp22,ae1001,ae8803-non-f22` would register you for AE 1000 in Spring 2022, AE 1001 in the current semester, and AE 8803 Nonlinear in Fall 2022."
+    message += "\n\n> Note2: If you want to register for a course in a semester other than " + CURRET_SEMESTER + " " + CURRENT_YEAR + " (the current semester) then just add the semester and year to the end of any course. Ex: `!register ae1000-sp22,ae1001,ae8803-non-f22` would register you for AE 1000 in Spring 2022, AE 1001 in the current semester, and AE 8803 Nonlinear in Fall 2022."
     
     message += "\n\n__**add**__ - add an unknown course (this is needed when you try to register for a course I've never seen before). The department code, course code, and the course title are needed, in that order."
     message += "\n> Ex: `!add ece1000 Intro to Electrical Engineering` would add the course ECE 1000 and call it \"Into to Electrical Engineering\""
@@ -291,7 +292,7 @@ async def register(context, *, arg):
 
     # iterate through all the courses they requested
     for x in courses_raw:
-        potential_course = Course(x, current_year, current_semester)
+        potential_course = Course(x, CURRENT_YEAR, CURRET_SEMESTER)
         logger.info("register - Processing course: " + potential_course.raw_string)
 
         # check if the course is valid by checking the database
